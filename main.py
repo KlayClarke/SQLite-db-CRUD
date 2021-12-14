@@ -12,6 +12,7 @@ app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
 
 db = sqlite3.connect('book-collection.db')
+cursor = db.cursor()
 
 
 class AddForm(FlaskForm):
