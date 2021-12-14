@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Rating</title>
+    {% import 'bootstrap/wtf.html' as wtf %}
+</head>
+<body>
+<h3>
+    Book Name: {{ book_title }}<br>
+    Current Rating: {{ book_current_rating }}<br>
+</h3>
+    {{ wtf.quick_form(form, novalidate=True) }}
+</body>
+</html>
