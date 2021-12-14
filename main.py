@@ -1,9 +1,7 @@
 import os
-import sqlite3
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length
 from flask import Flask, render_template, request, redirect, url_for
@@ -17,7 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-class Books(db.Model):
+class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), nullable=False, unique=True)
     author = db.Column(db.String(250), nullable=False)
@@ -26,18 +24,32 @@ class Books(db.Model):
 
 db.create_all()
 
-book = Books(id=1, title='Harry Potter', author='J. K. Rowling', rating=9.5)
-db.session.add(book)
-db.session.commit()
 
+# # Create New Record
+# new_book = Book(title='asfsfa', author='JKJKJljas Hhlnsa', rating=8.6)
+# db.session.add(new_book)
+# db.session.commit()
 
-# db = sqlite3.connect('book-collection.db')
-# cursor = db.cursor()
-# # cursor.execute('CREATE TABLE books (id INTEGER PRIMARY KEY, title varchar(250) NOT NULL UNIQUE, author varchar(250) '
-# #                'NOT NULL, rating FLOAT NOT NULL)')
-#
-# cursor.execute('INSERT INTO books VALUES(1, "Harry Potter", "J. K. Rowling", "9.3")')
-# db.commit()
+# # To Read All Records
+# all_books = db.session.query(Book).all()
+# print(all_books)
+
+# # To Update Particular Record By Query
+# book_to_update = Book.query.filter_by(title='Harry Potter').first()
+# book_to_update.title = 'Harry Potter and the Chamber of Secrets'
+# db.session.commit()
+
+# # To Update Particular Record By ID (Primary Key)
+# book_id = 1
+# book_to_update = Book.query.get(book_id)
+# book_to_update.title = 'Harry Portier'
+# db.session.commit()
+
+# # To Delete Particular Record By ID (Primary Key)
+# book_id = 3
+# book_to_delete = Book.query.get(book_id)
+# db.session.delete(book_to_delete)
+# db.session.commit()
 
 
 class AddForm(FlaskForm):
@@ -47,7 +59,7 @@ class AddForm(FlaskForm):
     add_book = SubmitField(label='Add Book')
 
 
-all_books = []
+# all_books = []
 
 
 @app.route('/')
