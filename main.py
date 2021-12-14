@@ -25,15 +25,6 @@ class Book(db.Model):
 db.create_all()
 
 
-# # Create New Record
-# new_book = Book(title='asfsfa', author='JKJKJljas Hhlnsa', rating=8.6)
-# db.session.add(new_book)
-# db.session.commit()
-
-# # To Read All Records
-# all_books = db.session.query(Book).all()
-# print(all_books)
-
 # # To Update Particular Record By Query
 # book_to_update = Book.query.filter_by(title='Harry Potter').first()
 # book_to_update.title = 'Harry Potter and the Chamber of Secrets'
@@ -59,27 +50,27 @@ class AddForm(FlaskForm):
     add_book = SubmitField(label='Add Book')
 
 
-# all_books = []
-
-
 @app.route('/')
 def home():
-    return render_template('index.html', all_books=all_books, number_of_inventory=len(all_books))
+    # To Read All Records
+    all_books = db.session.query(Book).all()
+    num_of_books = len(all_books)
+    return render_template('index.html', all_books=all_books, num_of_books=num_of_books)
 
 
 @app.route("/add", methods=['GET', 'POST'])
 def add():
     form = AddForm()
-    form.validate_on_submit()
-    if request.method == 'POST' and form.validate_on_submit():
-        book_data = {
-            'title': form.book_name.data,
-            'author': form.book_author.data,
-            'rating': form.book_rating.data
-        }
-        all_books.append(book_data)
-        return render_template('index.html', all_books=all_books)
-    return render_template('add.html', form=form)
+    if request.method == 'GET':
+        form.validate_on_submit()
+        return render_template('add.html', form=form)
+    elif request.method == 'POST' and form.validate_on_submit():
+        # Create New Record
+        new_book = Book(title=form.book_name.data, author=form.book_author.data, rating=form.book_rating.data)
+        db.session.add(new_book)
+        db.session.commit()
+        return redirect(url_for('home'))
+
 
 
 if __name__ == "__main__":
