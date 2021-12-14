@@ -30,11 +30,6 @@ db.create_all()
 # book_to_update.title = 'Harry Potter and the Chamber of Secrets'
 # db.session.commit()
 
-# # To Update Particular Record By ID (Primary Key)
-# book_id = 1
-# book_to_update = Book.query.get(book_id)
-# book_to_update.title = 'Harry Portier'
-# db.session.commit()
 
 # # To Delete Particular Record By ID (Primary Key)
 # book_id = 3
@@ -48,6 +43,11 @@ class AddForm(FlaskForm):
     book_author = StringField(label='Book Author', validators=[DataRequired()])
     book_rating = StringField(label='Book Rating e.g, 8/10', validators=[DataRequired()])
     add_book = SubmitField(label='Add Book')
+
+
+class EditForm(FlaskForm):
+    new_rating = StringField(label='', validators=[DataRequired()])
+    change_rating = SubmitField(label='Change Rating')
 
 
 @app.route('/')
@@ -71,6 +71,20 @@ def add():
         db.session.commit()
         return redirect(url_for('home'))
 
+
+@app.route('/edit/<book_id>', methods=['GET', 'POST'])
+def edit_rating(book_id):
+    form = EditForm()
+    # retrieve book's data from db using id
+    book = Book.query.get(book_id)
+    if request.method == 'GET':
+        form.validate_on_submit()
+        return render_template('edit.html', form=form, book_title=book.title, book_current_rating=book.rating)
+    elif request.method == 'POST' and form.validate_on_submit():
+        # To Update Particular Record By ID (Primary Key)
+        book.rating = form.new_rating.data
+        db.session.commit()
+        return redirect(url_for('home'))
 
 
 if __name__ == "__main__":
