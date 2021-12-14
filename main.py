@@ -1,5 +1,7 @@
 import os
 import sqlite3
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import StringField, SubmitField
@@ -10,15 +12,32 @@ app = Flask(__name__)
 Bootstrap(app)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
-db = sqlite3.connect('book-collection.db')
-cursor = db.cursor()
-# cursor.execute('CREATE TABLE books (id INTEGER PRIMARY KEY, title varchar(250) NOT NULL UNIQUE, author varchar(250) '
-#                'NOT NULL, rating FLOAT NOT NULL)')
-cursor.execute('INSERT INTO books VALUES(1, "Harry Potter", "J. K. Rowling", "9.3")')
-db.commit()
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new-book-collection.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
+class Books(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), nullable=False, unique=True)
+    author = db.Column(db.String(250), nullable=False)
+    rating = db.Column(db.Float, nullable=False)
 
+
+db.create_all()
+
+book = Books(id=1, title='Harry Potter', author='J. K. Rowling', rating=9.5)
+db.session.add(book)
+db.session.commit()
+
+
+# db = sqlite3.connect('book-collection.db')
+# cursor = db.cursor()
+# # cursor.execute('CREATE TABLE books (id INTEGER PRIMARY KEY, title varchar(250) NOT NULL UNIQUE, author varchar(250) '
+# #                'NOT NULL, rating FLOAT NOT NULL)')
+#
+# cursor.execute('INSERT INTO books VALUES(1, "Harry Potter", "J. K. Rowling", "9.3")')
+# db.commit()
 
 
 class AddForm(FlaskForm):
