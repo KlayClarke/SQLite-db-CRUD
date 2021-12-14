@@ -10,9 +10,10 @@ app = Flask(__name__)
 Bootstrap(app)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
-
 db = sqlite3.connect('book-collection.db')
 cursor = db.cursor()
+cursor.execute('CREATE TABLE books (id INTEGER PRIMARY KEY, title varchar(250) NOT NULL UNIQUE, author varchar(250) '
+               'NOT NULL, rating FLOAT NOT NULL)')
 
 
 class AddForm(FlaskForm):
