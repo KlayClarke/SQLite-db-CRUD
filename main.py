@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import StringField, SubmitField
@@ -8,6 +9,9 @@ from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 Bootstrap(app)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
+
+
+db = sqlite3.connect('book-collection.db')
 
 
 class AddForm(FlaskForm):
