@@ -31,13 +31,6 @@ db.create_all()
 # db.session.commit()
 
 
-# # To Delete Particular Record By ID (Primary Key)
-# book_id = 3
-# book_to_delete = Book.query.get(book_id)
-# db.session.delete(book_to_delete)
-# db.session.commit()
-
-
 class AddForm(FlaskForm):
     book_name = StringField(label='Book Name', validators=[DataRequired()])
     book_author = StringField(label='Book Author', validators=[DataRequired()])
@@ -85,6 +78,16 @@ def edit_rating(book_id):
         book.rating = form.new_rating.data
         db.session.commit()
         return redirect(url_for('home'))
+
+
+@app.route('/delete/<book_id>')
+def delete_book(book_id):
+    # retrieve book data
+    book = Book.query.get(book_id)
+    # To Delete Particular Record By ID (Primary Key)
+    db.session.delete(book)
+    db.session.commit()
+    return redirect(url_for('home'))
 
 
 if __name__ == "__main__":
