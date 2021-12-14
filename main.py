@@ -22,12 +22,11 @@ all_books = []
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', all_books=all_books, number_of_inventory=len(all_books))
 
 
 @app.route("/add", methods=['GET', 'POST'])
 def add():
-    book_inventory = all_books
     form = AddForm()
     form.validate_on_submit()
     if request.method == 'POST' and form.validate_on_submit():
